@@ -1,70 +1,154 @@
-# Getting Started with Create React App
+# TMotS - Gestionnaire de menu hebdomadaire et d'ingrédients
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Une application web simple et élégante en React pour vous aider à planifier vos menus hebdomadaires avec des recettes enregistrées et gérer vos listes de courses. Toutes les données sont stockées localement dans votre navigateur via le stockage local.
 
-## Available Scripts
+## Fonctionnalités
 
-In the project directory, you can run:
+- 📖 **Gestion des recettes** – Créez et enregistrez des recettes avec ingrédients, étapes de cuisson et liens optionnels vers des sites externes
+- 📅 **Planification du menu hebdomadaire** – Planifiez vos repas en sélectionnant des recettes ou en ajoutant des plats personnalisés
+- 🥕 **Inventaire des ingrédients** – Suivez les ingrédients que vous avez avec quantités et unités
+- 🛒 **Liste de courses intelligente** – Créez des listes de courses manuellement ou auto‑remplissez-les avec les ingrédients des recettes de votre menu
+- 💾 **Stockage local** – Toutes les données sont enregistrées automatiquement dans le stockage local de votre navigateur
+- 📱 **Design responsive** – Fonctionne aussi bien sur ordinateur que sur mobile
+- 🎨 **Interface soignée** – Interface moderne à dégradés avec animations fluides
 
-### `npm start`
+## Démarrage
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Prérequis
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js (v14 ou supérieur)
+- npm (v6 ou supérieur)
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Placez‑vous dans le dossier du projet :
+   ```bash
+   cd tmots_app
+   ```
 
-### `npm run build`
+2. Installez les dépendances :
+   ```bash
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Lancement de l’application
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Lancez le serveur de développement :
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm start
+```
 
-### `npm run eject`
+L’application s’ouvrira automatiquement dans votre navigateur à l’adresse [http://localhost:3000](http://localhost:3000).
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Compilation pour la production
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Pour générer une version optimisée :
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm run build
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Un dossier `build` contenant les fichiers optimisés sera créé.
 
-## Learn More
+## Utilisation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Onglet Recettes
+- Cliquez sur "➕ Créer une recette" pour ajouter une nouvelle recette
+- Saisissez le nom, les ingrédients (quantités et unités), les étapes de cuisson et éventuellement un lien vers la recette
+- Consultez toutes vos recettes sous forme de cartes
+- Modifiez ou supprimez des recettes si besoin
+- Chaque carte affiche un aperçu des ingrédients et des étapes
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Onglet Menu hebdomadaire
+- Cliquez sur "📅 Ajouter au menu" dans l’onglet Recettes pour insérer une recette dans le menu
+- Affichez toutes les recettes ajoutées sous forme de liste
+- Supprimez une recette ou videz le menu complet
 
-### Code Splitting
+### Onglet Ingrédients
+- Cette page sert désormais de **base d'ingrédients** : tous les ingrédients saisis dans une recette sont enregistrés ici
+- Vous pouvez **ajouter**, **modifier** ou **supprimer** des ingrédients de la base
+- Lors de la création d’une recette, un champ de saisie propose des suggestions issues de cette base pour éviter les doublons
+- La section inférieure rassemble automatiquement toutes les quantités d’ingrédients nécessaires pour les recettes du menu
+- Voyez les totaux par ingrédient et quelles recettes l’utilisent
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Onglet Liste de courses
+- **Ajoutez manuellement** des articles, ou
+- **Cliquez "📖 Depuis les recettes"** pour importer tous les ingrédients du menu
+- Cochez les articles au fur et à mesure de vos achats
+- Suivez votre progression grâce à la barre visuelle
+- Supprimez les cochés ou videz l’ensemble
 
-### Analyzing the Bundle Size
+## Stockage des données
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Toutes les données sont conservées dans le stockage local du navigateur :
+- **Recettes** : `tmots_recipes`
+- **Menu hebdomadaire** : `tmots_weekly_menu`
+- **Ingrédients** : `tmots_ingredients`
+- **Liste de courses** : `tmots_shopping_list`
 
-### Making a Progressive Web App
+Les données persistent entre les sessions de navigation. Pour tout effacer, videz le stockage local du navigateur.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Structure du projet
 
-### Advanced Configuration
+```
+tmots_app/
+├── src/
+│   ├── components/
+│   │   ├── RecipeManager.js       # Création et gestion des recettes
+│   │   ├── RecipeManager.css
+│   │   ├── MenuManager.js         # Planification du menu hebdomadaire
+│   │   ├── MenuManager.css
+│   │   ├── IngredientTracker.js   # Inventaire des ingrédients
+│   │   ├── IngredientTracker.css
+│   │   ├── ShoppingList.js        # Liste de courses avec synchronisation recette
+│   │   └── ShoppingList.css
+│   ├── utils/
+│   │   └── storage.js             # Utilitaires de stockage local
+│   ├── App.js                     # Composant principal
+│   ├── App.css                    # Styles principaux
+│   └── index.js
+├── public/
+├── package.json
+└── README.md
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Technologies utilisées
 
-### Deployment
+- **React** – bibliothèque UI
+- **React Hooks** – gestion d’état (`useState`, `useEffect`)
+- **CSS3** – styles avec dégradés et animations
+- **API Storage local** – persistance des données
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Compatibilité navigateurs
 
-### `npm run build` fails to minify
+Fonctionne dans tous les navigateurs modernes supportant :
+- React 18+
+- JavaScript ES6+
+- Stockage local
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Exemple de workflow
+
+1. **Créer des recettes** – Commencez par enregistrer vos recettes favorites
+2. **Planifier la semaine** – Ajoutez des recettes au menu
+3. **Générer la liste de courses** – Cliquez sur "Depuis les recettes" pour remplir la liste
+4. **Faire les courses** – Cochez les articles au fur et à mesure
+
+## Améliorations futures
+
+Fonctionnalités possibles pour les versions ultérieures :
+- Ajuster les portions (multiplier les ingrédients)
+- Exporter la liste de courses en PDF ou par e‑mail
+- Notes et évaluations des recettes
+- Filtres pour régimes alimentaires
+- Synchronisation cloud entre appareils
+- Application mobile
+- Minuteurs et notifications de préparation
+
+## Licence
+
+Ce projet est open source et disponible pour un usage personnel.
+
+## Support
+
+Pour toute question, consultez les commentaires dans le code source ou jetez un œil aux fichiers des composants pour des notes détaillées.

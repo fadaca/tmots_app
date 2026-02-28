@@ -1,0 +1,239 @@
+.shopping-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Ingrédients nécessaires auto */
+.ingredients-needed {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.ingredients-needed h3 {
+  margin-top: 0;
+  color: #c85a54;
+}
+
+.ingredients-needed .ingredient-group {
+  background: linear-gradient(135deg, rgba(200, 90, 84, 0.03) 0%, rgba(168, 74, 68, 0.03) 100%);
+  border: 1px solid #f0e8e8;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
+}
+
+.ingredients-needed .ingredient-group:hover {
+  border-color: #a84a44;
+  box-shadow: 0 2px 10px rgba(168, 74, 68, 0.1);
+}
+
+.shopping-stats {
+  background: linear-gradient(135deg, rgba(200, 90, 84, 0.1) 0%, rgba(168, 74, 68, 0.1) 100%);
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #c85a54;
+}
+
+.shopping-stats p {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-bar {
+  display: inline-block;
+  width: 200px;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+.progress-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #c85a54 0%, #a84a44 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.shopping-input-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.shopping-input-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.shopping-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.shopping-input:focus {
+  outline: none;
+  border-color: #c85a54;
+  box-shadow: 0 0 10px rgba(200, 90, 84, 0.2);
+}
+
+.shopping-items {
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #e0e0e0;
+  padding: 20px;
+  min-height: 100px;
+}
+
+.items-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shopping-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #c85a54;
+  transition: all 0.3s ease;
+  animation: slideInDown 0.3s ease;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.shopping-item:hover {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shopping-item.checked {
+  opacity: 0.6;
+  border-left-color: #4caf50;
+}
+
+.shopping-item.checked .item-name {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.item-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #c85a54;
+}
+
+.item-name {
+  flex: 1;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.shopping-item.checked .item-name {
+  text-decoration: line-through;
+}
+
+.btn-delete-small {
+  background: none;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-small:hover {
+  color: #ff5252;
+  transform: scale(1.2);
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 40px 20px;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.shopping-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.shopping-actions .btn-secondary {
+  flex: 1;
+  min-width: 150px;
+}
+
+@media (max-width: 768px) {
+  .shopping-input-section .input-group {
+    flex-direction: column;
+  }
+
+  .shopping-input {
+    min-width: unset;
+  }
+
+  .progress-bar {
+    width: 150px;
+  }
+
+  .shopping-item {
+    flex-wrap: wrap;
+  }
+
+  .item-checkbox {
+    order: 1;
+  }
+
+  .item-name {
+    order: 2;
+  }
+
+  .btn-delete-small {
+    order: 3;
+  }
+
+  .shopping-actions {
+    flex-direction: column;
+  }
+
+  .shopping-actions .btn-secondary {
+    min-width: unset;
+  }
+}

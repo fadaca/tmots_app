@@ -1,38 +1,290 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@300;400&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #8b2d27 0%, #c27474 100%);
+  min-height: 100vh;
+}
+
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #8b2d27 0%, #c27474 100%);
+  padding: 20px;
+}
+
+.app-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  padding: 30px 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-header p {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+/* Calligraphic styling for header keywords */
+.calligraphy {
+  /* use a more flowing script if available, fallback to cursive */
+  font-family: 'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', cursive;
+  font-size: 2.3rem;
+  font-weight: 300; /* thin */
+  letter-spacing: 0.5px;
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.tabs-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.tab-button.active {
+  background: white;
+  color: #c85a54;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.app-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.bottom-tab {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.bottom-tab .tab-button {
+  pointer-events: auto;
+}
+
+/* Suggestions modal */
+.suggestions-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.suggestions-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.suggestions-content h3 {
+  margin-top: 0;
+}
+
+.suggestions-content ul {
+  list-style: disc;
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.suggestions-content ul li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Input Groups */
+.input-group {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+  flex: 1;
+  min-width: 150px;
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: #c85a54;
+  box-shadow: 0 0 10px rgba(200, 90, 84, 0.2);
+}
+
+/* Buttons */
+.btn-primary {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #c85a54 0%, #a84a44 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(200, 90, 84, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  background: #f0f0f0;
+  color: #c85a54;
+  border: 2px solid #c85a54;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-secondary:hover {
+  background: #c85a54;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.btn-delete {
+  padding: 6px 12px;
+  background: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.btn-delete:hover {
+  background: #c85a54;
+  transform: scale(1.05);
+}
+
+.btn-delete-small {
+  background: none;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.btn-delete-small:hover {
+  color: #c85a54;
+  transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 2rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .app-content {
+    padding: 20px;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .input-group input,
+  .input-group select {
+    min-width: unset;
+  }
+
+  .tabs-nav {
+    gap: 5px;
+  }
+
+  .tab-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
   }
 }

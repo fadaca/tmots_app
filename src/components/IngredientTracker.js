@@ -1,0 +1,190 @@
+import React, { useState, useEffect } from 'react';
+import { storage } from '../utils/storage';
+import './IngredientTracker.css';
+
+function IngredientTracker() {
+  const [ingredientsDB, setIngredientsDB] = useState(() => storage.getIngredients());
+  const [ingredientsByName, setIngredientsByName] = useState({});
+  const [menu, setMenu] = useState(() => storage.getMenu());
+  const [recipes, setRecipes] = useState(() => storage.getRecipes());
+
+  const normalize = (str) => str.trim().toLowerCase();
+  const [newIngredientName, setNewIngredientName] = useState('');
+
+  const addIngredientToDB = (name) => {
+    const normalized = normalize(name);
+    if (!normalized) return;
+    if (ingredientsDB.map(normalize).includes(normalized)) return;
+    setIngredientsDB(prev => [...prev, name.trim()]);
+  };
+
+  const editIngredientInDB = (oldName, newName) => {
+    const normOld = normalize(oldName);
+    const normNew = normalize(newName);
+    if (!normNew) return;
+    // update DB
+    setIngredientsDB(prev => prev.map(i => normalize(i) === normOld ? newName.trim() : i));
+    // update all recipes that use this ingredient
+    setRecipes(prevRecipes => prevRecipes.map(recipe => {
+      const newIngredients = recipe.ingredients.map(ing => {
+        if (normalize(ing.name) === normOld) {
+          return { ...ing, name: newName.trim() };
+        }
+        return ing;
+      });
+      return { ...recipe, ingredients: newIngredients };
+    }));
+    // also update any menu entries
+    setMenu(prevMenu => {
+      if (!Array.isArray(prevMenu)) return prevMenu;
+      return prevMenu.map(meal => {
+        if (meal.type === 'Recette' && meal.ingredients) {
+          const newIngs = meal.ingredients.map(ing => {
+            if (normalize(ing.name) === normOld) {
+              return { ...ing, name: newName.trim() };
+            }
+            return ing;
+          });
+          return { ...meal, ingredients: newIngs };
+        }
+        return meal;
+      });
+    });
+  };
+
+  const deleteIngredientFromDB = (name) => {
+    const normName = normalize(name);
+    if (window.confirm(`Supprimer l'ingrédient "${name}" de la base ?`)) {
+      setIngredientsDB(prev => prev.filter(i => normalize(i) !== normName));
+    }
+  };
+
+  useEffect(() => {
+    // Aggregate ingredients from recipes in the weekly menu
+    const aggregated = {};
+
+    const menuArray = Array.isArray(menu) ? menu : [];
+    
+    menuArray.forEach(meal => {
+      if (meal.type === 'Recette' && meal.ingredients) {
+        meal.ingredients.forEach(ingredient => {
+          const ingredientName = ingredient.name.toLowerCase().trim();
+          
+          if (!aggregated[ingredientName]) {
+            aggregated[ingredientName] = {
+              displayName: ingredient.name,
+              recipes: []
+            };
+          }
+
+          aggregated[ingredientName].recipes.push({
+            recipeName: meal.name,
+            quantity: ingredient.quantity || '',
+            unit: ingredient.unit || ''
+          });
+        });
+      }
+    });
+
+    setIngredientsByName(aggregated);
+  }, [menu, recipes]);
+
+  // synchronize ingredientsDB with storage whenever it changes
+  useEffect(() => {
+    storage.setIngredients(ingredientsDB);
+  }, [ingredientsDB]);
+
+  // update recipes storage if they change
+  useEffect(() => {
+    storage.setRecipes(recipes);
+  }, [recipes]);
+
+  // keep menu in sync as well (in case we modified recipe names)
+  useEffect(() => {
+    storage.setMenu(menu);
+  }, [menu]);
+
+  const getTotalQuantity = (ingredient) => {
+    const quantities = ingredient.recipes
+      .filter(r => r.quantity && !isNaN(r.quantity))
+      .map(r => parseFloat(r.quantity));
+    
+    if (quantities.length === 0) return null;
+    
+    const total = quantities.reduce((sum, qty) => sum + qty, 0);
+    const unit = ingredient.recipes.find(r => r.unit)?.unit || '';
+    
+    return { total, unit };
+  };
+
+  const ingredientList = Object.entries(ingredientsByName)
+    .sort(([nameA], [nameB]) => nameA.localeCompare(nameB))
+    .map(([name, ingredient]) => ({
+      name,
+      ...ingredient,
+      total: getTotalQuantity(ingredient)
+    }));
+
+  return (
+    <div className="ingredient-tracker">
+      <div className="ingredient-db">
+        <h3>Base d'ingrédients</h3>
+        {ingredientsDB.length === 0 ? (
+          <p className="empty-message">La base est vide. Les ingrédients saisis dans les recettes y seront ajoutés automatiquement.</p>
+        ) : (
+          <ul className="ingredient-db-list">
+            {ingredientsDB.map((ing, idx) => (
+              <li key={idx} className="ingredient-db-item">
+                <span className="ingredient-name-display">{ing}</span>
+                <button
+                  className="btn-secondary-small"
+                  onClick={() => {
+                    const newVal = window.prompt('Nouvelle orthographe pour l\'ingrédient:', ing);
+                    if (newVal && newVal.trim() && newVal.trim() !== ing) {
+                      editIngredientInDB(ing, newVal);
+                    }
+                  }}
+                >
+                  ✏️
+                </button>
+                <button
+                  className="btn-delete-small"
+                  onClick={() => deleteIngredientFromDB(ing)}
+                >
+                  🗑️
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="ingredient-db-add">
+          <input
+            type="text"
+            value={newIngredientName}
+            placeholder="Ajouter un ingrédient à la base"
+            onChange={(e) => setNewIngredientName(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                addIngredientToDB(newIngredientName);
+                setNewIngredientName('');
+              }
+            }}
+          />
+          <button
+            className="btn-primary"
+            onClick={() => {
+              addIngredientToDB(newIngredientName);
+              setNewIngredientName('');
+            }}
+          >
+            ➕ Ajouter
+          </button>
+        </div>
+      </div>
+
+
+    </div>
+  );
+}
+
+export default IngredientTracker;
