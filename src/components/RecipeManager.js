@@ -171,22 +171,8 @@ function RecipeManager() {
 
   const deleteRecipe = (id, name) => {
     if (window.confirm(`Supprimer la recette "${name}"?`)) {
-      // remove from recipe list
       setRecipes(recipes.filter(recipe => recipe.id !== id));
-
-      // also purge any menu entries referencing this recipe
-      const updatedMenu = Array.isArray(menu)
-        ? menu.filter(meal => meal.recipeId !== id)
-        : [];
-      if (updatedMenu.length !== (Array.isArray(menu) ? menu.length : 0)) {
-        setMenu(updatedMenu);
-        // notify other components that menu changed (MenuManager listens)
-        window.dispatchEvent(new Event('menuUpdated'));
-        setNotificationText(`Recette "${name}" supprimée et retirée du menu`);
-      } else {
-        setNotificationText(`Recette "${name}" supprimée`);
-      }
-
+      setNotificationText(`Recette "${name}" supprimée`);
       setShowNotification(true);
     }
   };

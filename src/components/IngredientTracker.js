@@ -34,22 +34,6 @@ function IngredientTracker() {
       });
       return { ...recipe, ingredients: newIngredients };
     }));
-    // also update any menu entries
-    setMenu(prevMenu => {
-      if (!Array.isArray(prevMenu)) return prevMenu;
-      return prevMenu.map(meal => {
-        if (meal.type === 'Recette' && meal.ingredients) {
-          const newIngs = meal.ingredients.map(ing => {
-            if (normalize(ing.name) === normOld) {
-              return { ...ing, name: newName.trim() };
-            }
-            return ing;
-          });
-          return { ...meal, ingredients: newIngs };
-        }
-        return meal;
-      });
-    });
   };
 
   const deleteIngredientFromDB = (name) => {
@@ -182,7 +166,54 @@ function IngredientTracker() {
         </div>
       </div>
 
+      <div className="ingredient-header">
+        <h3>Ingrédients nécessaires</h3>
+        <p className="ingredient-subtitle">Ingrédients provenant des recettes de votre menu hebdomadaire</p>
+      </div>
 
+      <div className="ingredient-list">
+        {ingredientList.length === 0 ? (
+          <p className="empty-message">Aucune recette n'a encore été ajoutée au menu de la semaine</p>
+        ) : (
+          ingredientList.map(ingredient => (
+            <div key={ingredient.name} className="ingredient-group">
+              <div className="ingredient-header-row">
+                <div className="ingredient-info">
+                  <h4>{ingredient.displayName}</h4>
+                  {ingredient.total && (
+                    <span className="total-amount">
+                      Total: {ingredient.total.total} {ingredient.total.unit}
+                    </span>
+                  )}
+                </div>
+                <span className="badge-count">{ingredient.recipes.length} recette{ingredient.recipes.length !== 1 ? 's' : ''}</span>
+              </div>
+
+              <div className="recipe-list">
+                {ingredient.recipes.map((recipeUsage, idx) => (
+                  <div key={idx} className="recipe-usage">
+                    <div className="usage-details">
+                      <span className="recipe-name">{recipeUsage.recipeName}</span>
+                    </div>
+                    <div className="usage-quantity">
+                      <span className="quantity-badge">
+                        {recipeUsage.quantity} {recipeUsage.unit}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {ingredientList.length > 0 && (
+        <div className="ingredient-summary">
+          <p>Nombre d'ingrédients uniques requis : <strong>{ingredientList.length}</strong></p>
+          <p>Total des utilisations de recettes : <strong>{ingredientList.reduce((sum, ing) => sum + ing.recipes.length, 0)}</strong></p>
+        </div>
+      )}
     </div>
   );
 }

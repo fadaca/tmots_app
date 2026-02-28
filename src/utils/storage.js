@@ -3,7 +3,8 @@
 const STORAGE_KEYS = {
   MENU: 'tmots_weekly_menu',
   INGREDIENTS: 'tmots_ingredients',
-  SHOPPING_LIST: 'tmots_shopping_list'
+  SHOPPING_LIST: 'tmots_shopping_list',
+  RECIPES: 'tmots_recipes'
 };
 
 export const storage = {
@@ -40,5 +41,15 @@ export const storage = {
   // Clear all data
   clearAll: () => {
     Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
-  }
+  },
+
+  getRecipes: () => {
+    const data = localStorage.getItem(STORAGE_KEYS.RECIPES);
+    return data ? JSON.parse(data) : [];
+  },
+
+  setRecipes: (recipes) => {
+    localStorage.setItem(STORAGE_KEYS.RECIPES, JSON.stringify(recipes));
+ }   
+
 };
