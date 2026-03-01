@@ -3,9 +3,9 @@ import { storage } from '../utils/storage';
 import './RecipeManager.css';
 
 function RecipeManager() {
-  const [recipes, setRecipes] = useState(() => storage.getRecipes());
-  const [menu, setMenu] = useState(() => storage.getMenu());
-  const [ingredientsDB, setIngredientsDB] = useState(() => storage.getIngredients());
+  const [recipes, setRecipes] = useState([]);
+  const [menu, setMenu] = useState([]);
+  const [ingredientsDB, setIngredientsDB] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const normalize = (str) => str.trim().toLowerCase();
   const [editingId, setEditingId] = useState(null);
@@ -19,15 +19,27 @@ function RecipeManager() {
     steps: ['']
   });
 
+  // load data once on mount
   useEffect(() => {
-    storage.setRecipes(recipes);
-  }, [recipes]);
+    storage.getRecipes().then(setRecipes).catch(console.error);
+    storage.getMenu().then(setMenu).catch(console.error);
+    storage.getIngredients().then(setIngredientsDB).catch(console.error);
+  }, []);
 
+  // persistent sync of ingredients only; menu is synced explicitly when recipes are added
+  const ingredientsFirst = React.useRef(true);
+
+
+  // persist when ingredient database changes
   useEffect(() => {
-    storage.setIngredients(ingredientsDB);
+    if (ingredientsFirst.current) {
+      ingredientsFirst.current = false;
+      return;
+    }
+    storage.setIngredients(ingredientsDB).catch(console.error);
   }, [ingredientsDB]);
 
-  // initialize ingredient DB from existing recipes at mount
+  // ensure ingredient DB contains all names referenced by recipes
   useEffect(() => {
     const existing = new Set(ingredientsDB.map(i => normalize(i)));
     const toAdd = [];
@@ -44,11 +56,8 @@ function RecipeManager() {
     if (toAdd.length) {
       setIngredientsDB(prev => [...prev, ...toAdd]);
     }
-  }, []);
+  }, [recipes, ingredientsDB]);
 
-  useEffect(() => {
-    storage.setMenu(menu);
-  }, [menu]);
 
   useEffect(() => {
     if (showNotification) {
@@ -125,14 +134,18 @@ function RecipeManager() {
     }
 
     if (editingId) {
-      setRecipes(recipes.map(recipe =>
+      const updated = recipes.map(recipe =>
         recipe.id === editingId
           ? { ...formData, id: editingId }
           : recipe
-      ));
+      );
+      setRecipes(updated);
+      storage.setRecipes(updated).catch(console.error);
       setEditingId(null);
     } else {
-      setRecipes([...recipes, { ...formData, id: Date.now() }]);
+      const updated = [...recipes, { ...formData, id: Date.now() }];
+      setRecipes(updated);
+      storage.setRecipes(updated).catch(console.error);
     }
 
     // update ingredients database
@@ -171,7 +184,9 @@ function RecipeManager() {
 
   const deleteRecipe = (id, name) => {
     if (window.confirm(`Supprimer la recette "${name}"?`)) {
-      setRecipes(recipes.filter(recipe => recipe.id !== id));
+      const updated = recipes.filter(recipe => recipe.id !== id);
+      setRecipes(updated);
+      storage.setRecipes(updated).catch(console.error);
       setNotificationText(`Recette "${name}" supprimée`);
       setShowNotification(true);
     }
@@ -190,6 +205,8 @@ function RecipeManager() {
     });
 
     setMenu(updatedMenu);
+    storage.setMenu(updatedMenu).catch(console.error);
+    window.dispatchEvent(new Event('menuUpdated'));
     setNotificationText(`"${recipe.name}" ajoutée au menu!`);
     setShowNotification(true);
   };

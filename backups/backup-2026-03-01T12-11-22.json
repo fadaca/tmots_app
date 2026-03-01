@@ -1,0 +1,108 @@
+{
+  "timestamp": "2026-03-01T12:11:22.603Z",
+  "data": {
+    "menu": [
+      {
+        "id": 1772366822974,
+        "name": "Tarte aux pomme",
+        "type": "Recette",
+        "recipeId": 1772365051876,
+        "ingredients": [
+          {
+            "name": "pommes",
+            "quantity": "1",
+            "unit": ""
+          }
+        ],
+        "steps": [
+          "zzoe"
+        ]
+      },
+      {
+        "id": 1772366823492,
+        "name": "Pommes",
+        "type": "Recette",
+        "recipeId": 1772366672675,
+        "ingredients": [
+          {
+            "name": "pommes",
+            "quantity": "1",
+            "unit": "kg"
+          }
+        ],
+        "steps": [
+          "a"
+        ]
+      }
+    ],
+    "ingredients": [
+      "pommes",
+      "poires",
+      "aze"
+    ],
+    "recipes": [
+      {
+        "name": "Tarte aux pomme",
+        "ingredients": [
+          {
+            "name": "pommes",
+            "quantity": "1",
+            "unit": ""
+          }
+        ],
+        "websiteLink": "",
+        "steps": [
+          "zzoe"
+        ],
+        "id": 1772365051876
+      },
+      {
+        "name": "Tarte aux poires",
+        "ingredients": [
+          {
+            "name": "poires",
+            "quantity": "1",
+            "unit": ""
+          }
+        ],
+        "websiteLink": "",
+        "steps": [
+          "manger"
+        ],
+        "id": 1772365546446
+      },
+      {
+        "name": "azeaze",
+        "ingredients": [
+          {
+            "name": "aze",
+            "quantity": "1",
+            "unit": ""
+          }
+        ],
+        "websiteLink": "azeaze",
+        "steps": [
+          "azeaze"
+        ],
+        "id": 1772366569461
+      },
+      {
+        "name": "Pommes",
+        "ingredients": [
+          {
+            "name": "pommes",
+            "quantity": "1",
+            "unit": "kg"
+          }
+        ],
+        "websiteLink": "",
+        "steps": [
+          "a"
+        ],
+        "id": 1772366672675
+      }
+    ],
+    "shopping": [],
+    "suggestions": []
+  }
+}

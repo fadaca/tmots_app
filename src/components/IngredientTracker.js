@@ -3,10 +3,10 @@ import { storage } from '../utils/storage';
 import './IngredientTracker.css';
 
 function IngredientTracker() {
-  const [ingredientsDB, setIngredientsDB] = useState(() => storage.getIngredients());
+  const [ingredientsDB, setIngredientsDB] = useState([]);
   const [ingredientsByName, setIngredientsByName] = useState({});
-  const [menu, setMenu] = useState(() => storage.getMenu());
-  const [recipes, setRecipes] = useState(() => storage.getRecipes());
+  const [menu, setMenu] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   const normalize = (str) => str.trim().toLowerCase();
   const [newIngredientName, setNewIngredientName] = useState('');
@@ -15,7 +15,9 @@ function IngredientTracker() {
     const normalized = normalize(name);
     if (!normalized) return;
     if (ingredientsDB.map(normalize).includes(normalized)) return;
-    setIngredientsDB(prev => [...prev, name.trim()]);
+    const updated = [...ingredientsDB, name.trim()];
+    setIngredientsDB(updated);
+    storage.setIngredients(updated).catch(console.error);
   };
 
   const editIngredientInDB = (oldName, newName) => {
@@ -23,28 +25,45 @@ function IngredientTracker() {
     const normNew = normalize(newName);
     if (!normNew) return;
     // update DB
-    setIngredientsDB(prev => prev.map(i => normalize(i) === normOld ? newName.trim() : i));
+    const updatedDB = ingredientsDB.map(i => normalize(i) === normOld ? newName.trim() : i);
+    setIngredientsDB(updatedDB);
+    storage.setIngredients(updatedDB).catch(console.error);
+
     // update all recipes that use this ingredient
-    setRecipes(prevRecipes => prevRecipes.map(recipe => {
-      const newIngredients = recipe.ingredients.map(ing => {
-        if (normalize(ing.name) === normOld) {
-          return { ...ing, name: newName.trim() };
-        }
-        return ing;
+    setRecipes(prevRecipes => {
+      const updated = prevRecipes.map(recipe => {
+        const newIngredients = recipe.ingredients.map(ing => {
+          if (normalize(ing.name) === normOld) {
+            return { ...ing, name: newName.trim() };
+          }
+          return ing;
+        });
+        return { ...recipe, ingredients: newIngredients };
       });
-      return { ...recipe, ingredients: newIngredients };
-    }));
+      storage.setRecipes(updated).catch(console.error);
+      return updated;
+    });
   };
 
   const deleteIngredientFromDB = (name) => {
     const normName = normalize(name);
     if (window.confirm(`Supprimer l'ingrédient "${name}" de la base ?`)) {
-      setIngredientsDB(prev => prev.filter(i => normalize(i) !== normName));
+      const updated = ingredientsDB.filter(i => normalize(i) !== normName);
+      setIngredientsDB(updated);
+      storage.setIngredients(updated).catch(console.error);
     }
   };
 
+  // load stored values when component mounts
   useEffect(() => {
-    // Aggregate ingredients from recipes in the weekly menu
+    storage.getIngredients().then(setIngredientsDB).catch(console.error);
+    storage.getMenu().then(setMenu).catch(console.error);
+    storage.getRecipes().then(setRecipes).catch(console.error);
+  }, []);
+
+
+  // Aggregate ingredients from recipes in the weekly menu
+  useEffect(() => {
     const aggregated = {};
 
     const menuArray = Array.isArray(menu) ? menu : [];
@@ -73,20 +92,6 @@ function IngredientTracker() {
     setIngredientsByName(aggregated);
   }, [menu, recipes]);
 
-  // synchronize ingredientsDB with storage whenever it changes
-  useEffect(() => {
-    storage.setIngredients(ingredientsDB);
-  }, [ingredientsDB]);
-
-  // update recipes storage if they change
-  useEffect(() => {
-    storage.setRecipes(recipes);
-  }, [recipes]);
-
-  // keep menu in sync as well (in case we modified recipe names)
-  useEffect(() => {
-    storage.setMenu(menu);
-  }, [menu]);
 
   const getTotalQuantity = (ingredient) => {
     const quantities = ingredient.recipes

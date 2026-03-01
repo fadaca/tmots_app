@@ -1,6 +1,6 @@
 # TMotS - Gestionnaire de menu hebdomadaire et d'ingrédients
 
-Une application web simple et élégante en React pour vous aider à planifier vos menus hebdomadaires avec des recettes enregistrées et gérer vos listes de courses. Toutes les données sont stockées localement dans votre navigateur via le stockage local.
+Une application web simple et élégante en React pour vous aider à planifier vos menus hebdomadaires avec des recettes enregistrées et gérer vos listes de courses. Toutes les données sont désormais conservées sur le disque du serveur (idéalement une Raspberry Pi) dans de simples fichiers JSON. Le frontend communique avec une API REST Express pour lire/écrire ces fichiers ; il n'y a plus de dépendance au stockage local.
 
 ## Fonctionnalités
 
@@ -33,13 +33,30 @@ Une application web simple et élégante en React pour vous aider à planifier v
 
 ### Lancement de l’application
 
-Lancez le serveur de développement :
+Deux serveurs sont maintenant disponibles : le frontend React et le backend Express.
 
-```bash
-npm start
-```
+1. **Backend** (persist les données dans `data/*.json`) :
+   ```bash
+   node server.js
+   ```
+   Le serveur écoute sur `http://localhost:3000` par défaut et fournit à la fois l'API et les fichiers statiques produits par le build.
 
-L’application s’ouvrira automatiquement dans votre navigateur à l’adresse [http://localhost:3000](http://localhost:3000).
+2. **Frontend en développement** (optionnel) :
+   ```bash
+   npm start
+   ```
+   Ce qui lance la configuration de développement `react-scripts` sur `http://localhost:3000`.
+   Si vous exécutez également le backend sur le même port, ajoutez un proxy dans `package.json` :
+   ```json
+   "proxy": "http://localhost:3000"
+   ```
+   (la configuration de proxy est déjà fournie par `react-scripts` lorsque le backend est sur le même port.)
+3. **Tout en un** – utile sur un Raspberry Pi Lite où vous voulez un seul terminal :
+   ```bash
+   npm run dev
+   ```
+   Ce script démarre le serveur de l'API (`src/server.js`) et la version de développement React simultanément en utilisant le paquet `concurrently`. Les deux processus s'exécutent en parallèle dans le même shell.
+L’application React émet des requêtes vers `/api/...` et peut fonctionner soit avec le backend de développement démarré séparément (port 3001 par défaut dans `src/server.js`), soit directement avec le serveur express principal après un `npm run build`.
 
 ### Compilation pour la production
 
@@ -81,13 +98,19 @@ Un dossier `build` contenant les fichiers optimisés sera créé.
 
 ## Stockage des données
 
-Toutes les données sont conservées dans le stockage local du navigateur :
-- **Recettes** : `tmots_recipes`
-- **Menu hebdomadaire** : `tmots_weekly_menu`
-- **Ingrédients** : `tmots_ingredients`
-- **Liste de courses** : `tmots_shopping_list`
+Depuis la refonte, les données sont persistées par l'API Express du serveur :
 
-Les données persistent entre les sessions de navigation. Pour tout effacer, videz le stockage local du navigateur.
+| Endpoint           | Fichier JSON stocké     | Type de données |
+|--------------------|-------------------------|-----------------|
+| `GET/POST /api/menu`         | `data/menu.json`          | Objet ou tableau
+| `GET/POST /api/ingredients`  | `data/ingredients.json`   | Tableau de chaînes
+| `GET/POST /api/recipes`      | `data/recipes.json`       | Tableau d'objets
+| `GET/POST /api/shopping`     | `data/shopping.json`      | Tableau d'articles
+| `GET/POST /api/suggestions`  | `data/suggestions.json`   | Tableau de chaînes
+
+Le serveur crée automatiquement le répertoire `data/` et les fichiers correspondants à la première exécution. Si un fichier JSON est vide ou malformé (par exemple suite à une interruption pendant l’écriture), le serveur l’écrasera avec sa valeur par défaut lors du prochain accès. Vous pouvez également supprimer manuellement `data/*.json` pour repartir à zéro.
+
+Vous pouvez modifier ou sauvegarder les données directement sur la machine hébergeant l'application (par exemple, une Raspberry Pi). Aucun stockage local n’est utilisé côté client, ce qui permet de partager les mêmes données entre plusieurs navigateurs.
 
 ## Structure du projet
 

@@ -31,39 +31,81 @@
   box-shadow: 0 2px 10px rgba(168, 74, 68, 0.1);
 }
 
-.shopping-stats {
-  background: linear-gradient(135deg, rgba(200, 90, 84, 0.1) 0%, rgba(168, 74, 68, 0.1) 100%);
-  padding: 20px;
-  border-radius: 10px;
-  border-left: 4px solid #c85a54;
+.ingredients-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
 }
 
-.shopping-stats p {
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 10px;
+.filter-section {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
+  min-width: 250px;
 }
 
-.progress-bar {
-  display: inline-block;
-  width: 200px;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-left: 10px;
+.filter-section label {
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
 }
 
-.progress-fill {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #c85a54 0%, #a84a44 100%);
-  border-radius: 4px;
-  transition: width 0.3s ease;
+.recipe-filter {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
+
+.recipe-filter:hover {
+  border-color: #c85a54;
+}
+
+.recipe-filter:focus {
+  outline: none;
+  border-color: #c85a54;
+  box-shadow: 0 0 8px rgba(200, 90, 84, 0.2);
+}
+
+.ingredient-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.ingredient-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recipe-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recipe-tag {
+  background: linear-gradient(135deg, #c85a54 0%, #a84a44 100%);
+  color: white;
+  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-weight: 500;
+}
+
 
 .shopping-input-section {
   background: #f8f9fa;
@@ -135,21 +177,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.shopping-item.checked {
-  opacity: 0.6;
-  border-left-color: #4caf50;
-}
-
-.shopping-item.checked .item-name {
-  text-decoration: line-through;
-  color: #999;
-}
-
-.item-checkbox {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  accent-color: #c85a54;
+.item-bullet {
+  color: #c85a54;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .item-name {
@@ -157,10 +189,6 @@
   color: #333;
   font-weight: 500;
   transition: all 0.3s ease;
-}
-
-.shopping-item.checked .item-name {
-  text-decoration: line-through;
 }
 
 .btn-delete-small {
@@ -217,23 +245,39 @@
     flex-wrap: wrap;
   }
 
-  .item-checkbox {
-    order: 1;
-  }
-
-  .item-name {
-    order: 2;
-  }
-
-  .btn-delete-small {
-    order: 3;
-  }
-
   .shopping-actions {
     flex-direction: column;
   }
 
   .shopping-actions .btn-secondary {
     min-width: unset;
+  }
+
+  .ingredients-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    min-width: unset;
+  }
+
+  .recipe-filter {
+    width: 100%;
+  }
+
+  .ingredient-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ingredient-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .recipe-details {
+    margin-top: 10px;
   }
 }

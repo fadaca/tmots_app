@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1772366822974,
+    "name": "Tarte aux pomme",
+    "type": "Recette",
+    "recipeId": 1772365051876,
+    "ingredients": [
+      {
+        "name": "pommes",
+        "quantity": "1",
+        "unit": ""
+      }
+    ],
+    "steps": [
+      "zzoe"
+    ]
+  },
+  {
+    "id": 1772367132405,
+    "name": "Tarte aux poires",
+    "type": "Recette",
+    "recipeId": 1772365546446,
+    "ingredients": [
+      {
+        "name": "poires",
+        "quantity": "1",
+        "unit": ""
+      }
+    ],
+    "steps": [
+      "manger"
+    ]
+  },
+  {
+    "id": 1772367513571,
+    "name": "Pommes",
+    "type": "Recette",
+    "recipeId": 1772366672675,
+    "ingredients": [
+      {
+        "name": "pommes",
+        "quantity": "1",
+        "unit": "kg"
+      }
+    ],
+    "steps": [
+      "a"
+    ]
+  }
+]

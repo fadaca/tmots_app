@@ -3,20 +3,23 @@ import { storage } from '../utils/storage';
 import './MenuManager.css';
 
 function MenuManager() {
-  const [menu, setMenu] = useState(() => storage.getMenu());
-  const [recipes, setRecipes] = useState(() => storage.getRecipes());
+  const [menu, setMenu] = useState([]);
+  const [recipes, setRecipes] = useState([]);
   const [selectedRecipeId, setSelectedRecipeId] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationText, setNotificationText] = useState('');
 
+  // load data on mount
   useEffect(() => {
-    storage.setMenu(menu);
-  }, [menu]);
+    storage.getMenu().then(setMenu).catch(console.error);
+    storage.getRecipes().then(setRecipes).catch(console.error);
+  }, []);
 
-  // if other components modify the menu (e.g. a recipe deletion), reload it
+
+  // if other components emit an event, pull fresh menu from server
   useEffect(() => {
     const handler = () => {
-      setMenu(storage.getMenu());
+      storage.getMenu().then(setMenu).catch(console.error);
     };
     window.addEventListener('menuUpdated', handler);
     return () => window.removeEventListener('menuUpdated', handler);
@@ -34,6 +37,8 @@ function MenuManager() {
     if (window.confirm(`Retirer "${name}" du menu ?`)) {
       const updatedMenu = Array.isArray(menu) ? menu.filter(meal => meal.id !== mealId) : [];
       setMenu(updatedMenu);
+      storage.setMenu(updatedMenu).catch(console.error);
+      window.dispatchEvent(new Event('menuUpdated'));
       setNotificationText(`"${name}" retiré du menu`);
       setShowNotification(true);
     }
@@ -42,6 +47,8 @@ function MenuManager() {
   const clearWeek = () => {
     if (window.confirm('Effacer tout le menu ?')) {
       setMenu([]);
+      storage.setMenu([]).catch(console.error);
+      window.dispatchEvent(new Event('menuUpdated'));
       setNotificationText('Menu de la semaine effacé');
       setShowNotification(true);
     }
