@@ -129,11 +129,17 @@ function ShoppingList() {
 
   const copyToClipboard = () => {
     const listText = items.map(item => `• ${item.name}`).join('\n');
-    navigator.clipboard.writeText(listText).then(() => {
-      alert('Liste copiée au presse-papiers!');
-    }).catch(() => {
-      alert('Erreur lors de la copie');
-    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(listText).then(() => {
+        alert('Liste copiée au presse-papiers!');
+      }).catch(() => {
+        // fallback if clipboard write fails (e.g. remote session)
+        window.prompt('Copiez manuellement cette liste:', listText);
+      });
+    } else {
+      // older browsers or restricted environments
+      window.prompt('Copiez manuellement cette liste:', listText);
+    }
   };
 
   const downloadAsText = () => {

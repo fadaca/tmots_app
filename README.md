@@ -51,12 +51,37 @@ Deux serveurs sont maintenant disponibles : le frontend React et le backend Exp
    "proxy": "http://localhost:3000"
    ```
    (la configuration de proxy est déjà fournie par `react-scripts` lorsque le backend est sur le même port.)
-3. **Tout en un** – utile sur un Raspberry Pi Lite où vous voulez un seul terminal :
+3. **Tout en un** – utile sur un Raspberry Pi Lite où vous voulez un seul terminal :
    ```bash
    npm run dev
    ```
    Ce script démarre le serveur de l'API (`src/server.js`) et la version de développement React simultanément en utilisant le paquet `concurrently`. Les deux processus s'exécutent en parallèle dans le même shell.
-L’application React émet des requêtes vers `/api/...` et peut fonctionner soit avec le backend de développement démarré séparément (port 3001 par défaut dans `src/server.js`), soit directement avec le serveur express principal après un `npm run build`.
+
+#### Déploiement sur une Raspberry Pi
+L'application se prête particulièrement bien à un hébergement sur une Pi (modèle 3/4 ou Zero 2). Voici la procédure recommandée :
+
+1. Clonez votre dépôt et installez Node.js :
+   ```bash
+   curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo bash -
+   sudo apt install -y nodejs git
+   git clone <votre‑repo> tmots_app
+   cd tmots_app
+   npm install
+   ```
+2. Lancez le serveur à l'intérieur d'une session `screen` pour qu'il continue de tourner sans dépendre de votre connexion SSH :
+   ```bash
+   screen -S tmots        # nouvelle session nommée "tmots"
+   npm start              # ou `node server.js` selon votre configuration
+   # détachez avec Ctrl‑a d, revenez avec `screen -r tmots`
+   ```
+   Un simple `screen -ls` liste les sessions ; `screen -S tmots -X quit` termine la session proprement.
+
+3. Utilisez `npm run build` pour une version de production, puis servez le dossier `build` avec `node server.js` ou un outil comme `pm2`/`systemd` si vous préférez un service.
+
+> **Astuce** : si vous accédez à l'interface depuis un autre appareil via le réseau local, l'URL sera `http://<adresse-ip-de-la-pi>:3000`.
+
+#### Copier la liste de courses à distance
+Sur un navigateur distant (par exemple en accès VNC ou SSH avec tunnel X11), l'API du presse‑papier peut échouer. Le bouton **Copier** gère désormais ce cas : s'il ne parvient pas à écrire, une fenêtre `prompt` affiche le texte de la liste, vous permettant de le sélectionner manuellement et de le coller dans n'importe quelle application de notes (Google Keep, Notes, etc.). Cette fallback est documentée dans le code `ShoppingList.js` pour transparence.
 
 ### Compilation pour la production
 
