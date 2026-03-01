@@ -1,0 +1,19 @@
+[Unit]
+Description=TMotS - menu and shopping list app
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/tmots_app
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
+
+# NOTE: Adjust `User` and `WorkingDirectory` to match your Pi user and the
+# path where you cloned the repository before copying this file to
+# /etc/systemd/system/tmots.service

@@ -80,6 +80,70 @@ L'application se prête particulièrement bien à un hébergement sur une Pi (mo
 
 > **Astuce** : si vous accédez à l'interface depuis un autre appareil via le réseau local, l'URL sera `http://<adresse-ip-de-la-pi>:3000`.
 
+*Option DNS/local hostname* : pour éviter de taper l’adresse IP à chaque fois, vous pouvez donner un nom simple à la Pi.
+
+1. **Modification de `/etc/hosts`** (valide uniquement pour la machine locale et les clients sur le même réseau si vous éditez aussi leurs fichiers) :
+   ```bash
+   sudo sh -c 'echo "192.168.1.X tmots" >> /etc/hosts'
+   # remplacez 192.168.1.X par l'IP réelle de la Pi
+   ```
+   Ensuite accédez à `http://tmots:3000` depuis un poste qui a la même entrée dans son `/etc/hosts`.
+
+2. **Avahi/Bonjour (mDNS)** : installez et activez `avahi-daemon` sur la Pi :
+   ```bash
+   sudo apt install avahi-daemon
+   # le service expose automatiquement le nom <hostname>.local
+   ```
+   en supposant que le nom d'hôte de la Pi est `tmots`, vous pouvez visiter `http://tmots.local:3000` depuis n'importe quel appareil du réseau supportant mDNS (macOS, Linux, Windows avec Bonjour).
+
+Les deux méthodes vous permettent d'éviter de mémoriser l'adresse IP et de saisir simplement `tmots` ou `tmots.local` dans votre navigateur.
+
+### Démarrage automatique au boot (systemd)
+
+Vous pouvez configurer l'application pour qu'elle démarre automatiquement au démarrage de la Raspberry Pi en utilisant un service `systemd`. Un fichier d'exemple `tmots.service` est fourni à la racine du projet : adaptez-le puis installez‑le.
+
+1. Copiez le fichier `tmots.service` sur la Pi (ou éditez‑le directement) et adaptez `User` et `WorkingDirectory` :
+
+```bash
+# depuis la racine du projet sur la Pi
+sudo cp tmots.service /etc/systemd/system/
+sudo nano /etc/systemd/system/tmots.service   # ajustez User et WorkingDirectory
+```
+
+2. Rechargez `systemd`, activez et démarrez le service :
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable tmots.service
+sudo systemctl start tmots.service
+```
+
+3. Vérifiez le statut et les logs :
+
+```bash
+sudo systemctl status tmots.service
+sudo journalctl -u tmots.service -f
+```
+
+Optionnel : un petit script d'installation est fourni dans `scripts/install-service.sh`. Exécutez‑le depuis la Pi (en fournissant le chemin vers le dossier de l'application et, optionnellement, l'utilisateur) :
+
+```bash
+sudo bash scripts/install-service.sh /home/pi/tmots_app pi
+```
+
+Alternative (pm2) : si vous préférez un gestionnaire de processus Node, installez `pm2` et faites démarrer l'app au boot via pm2 :
+
+```bash
+sudo npm install -g pm2
+cd /home/pi/tmots_app
+pm2 start server.js --name tmots
+pm2 save
+pm2 startup systemd
+# suivez les instructions affichées par pm2 pour finaliser la configuration
+```
+
+Avec ces options, votre instance TMotS démarrera automatiquement au boot et redémarrera en cas de plantage.
+
 #### Copier la liste de courses à distance
 Sur un navigateur distant (par exemple en accès VNC ou SSH avec tunnel X11), l'API du presse‑papier peut échouer. Le bouton **Copier** gère désormais ce cas : s'il ne parvient pas à écrire, une fenêtre `prompt` affiche le texte de la liste, vous permettant de le sélectionner manuellement et de le coller dans n'importe quelle application de notes (Google Keep, Notes, etc.). Cette fallback est documentée dans le code `ShoppingList.js` pour transparence.
 
